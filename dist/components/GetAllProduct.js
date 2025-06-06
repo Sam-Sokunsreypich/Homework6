@@ -10,9 +10,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 const BASE_URL = "https://dummyjson.com";
 const searchInput = document.getElementById("search-input");
 const productContainer = document.getElementById("product-container");
+function showSkeletons(count) {
+    if (!productContainer)
+        return;
+    const skeleton = `
+    <div class="animate-pulse border p-4 rounded-lg shadow-md">
+      <div class="h-48 bg-gray-300 rounded mb-4"></div>
+      <div class="h-6 bg-gray-300 rounded w-3/4 mb-2"></div>
+      <div class="h-4 bg-gray-300 rounded w-1/2 mb-4"></div>
+      <div class="h-10 bg-gray-300 rounded w-full"></div>
+    </div>
+  `;
+    productContainer.innerHTML = Array(count).fill(skeleton).join('');
+}
+console.log(productContainer);
 export function fetchProduct() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            showSkeletons(9);
             const response = yield axios.get(`${BASE_URL}/products`);
             return response.data.products;
         }
@@ -25,7 +40,6 @@ export function fetchProduct() {
         }
     });
 }
-console.log(fetchProduct());
 function renderProductList(products) {
     if (!productContainer)
         return;
@@ -71,10 +85,8 @@ function setupSearch() {
         renderProductList(filtered);
     });
 }
-(function init() {
-    return __awaiter(this, void 0, void 0, function* () {
-        allProducts = yield fetchProduct();
-        renderProductList(allProducts);
-        setupSearch();
-    });
-})();
+document.addEventListener("DOMContentLoaded", () => __awaiter(void 0, void 0, void 0, function* () {
+    allProducts = yield fetchProduct();
+    renderProductList(allProducts);
+    setupSearch();
+}));
